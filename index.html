@@ -2,18 +2,63 @@
 <html>
   <head>
     <title>Cuckoo Web Client</title>
+
     <link rel="stylesheet" href="styles.css">
     <link rel="favicon" href="favicon.ico">
     <link rel="icon" type="image/png" href="favicon.png" />
+
     <meta name="description" content="Minecraft!">
     <meta name="keywords" content="Minecraft">
     <meta name="author" content="Cucuzacu">
     <meta name="theme-color" content="#349474">
-    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=0'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta property="og:title" content="Cuckoo Web Client" />
     <meta property="og:type" content="website" />
+
     <link rel="manifest" href="manifest.json" crossorigin="use-credentials">
-  <script defer src="././index.js?465d54271d8565b734d1"></script></head>
+
+    <style>
+      #ram-counter {
+        position: fixed;
+        bottom: 8px;
+        left: 8px;
+        font-family: monospace;
+        font-size: 12px;
+        color: #ffffff;
+        background: rgba(0, 0, 0, 0.55);
+        padding: 4px 8px;
+        border-radius: 4px;
+        z-index: 9999;
+        pointer-events: none;
+      }
+    </style>
+
+    <script defer src="././index.js?465d54271d8565b734d1"></script>
+
+    <script defer>
+      window.addEventListener("load", () => {
+        if (!performance || !performance.memory) {
+          console.warn("performance.memory not supported (Chromium only)");
+          return;
+        }
+
+        const counter = document.getElementById("ram-counter");
+
+        function updateRAM() {
+          const mem = performance.memory;
+          const usedMB = (mem.usedJSHeapSize / 1048576).toFixed(1);
+          const totalMB = (mem.totalJSHeapSize / 1048576).toFixed(1);
+          const limitMB = (mem.jsHeapSizeLimit / 1048576).toFixed(0);
+
+          counter.textContent = `RAM: ${usedMB} / ${totalMB} MB (limit ${limitMB})`;
+        }
+
+        updateRAM();
+        setInterval(updateRAM, 1000);
+      });
+    </script>
+  </head>
+
   <body>
     <div id="ui-root">
       <pmui-hud id="hud" style="display: none;"></pmui-hud>
@@ -24,5 +69,7 @@
       <pmui-optionsscreen id="options-screen" style="display: none;"></pmui-optionsscreen>
       <pmui-titlescreen id="title-screen" style="display: none;"></pmui-titlescreen>
     </div>
+
+    <div id="ram-counter">RAM: -- MB</div>
   </body>
 </html>
